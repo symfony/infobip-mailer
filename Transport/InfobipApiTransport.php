@@ -31,7 +31,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  */
 final class InfobipApiTransport extends AbstractApiTransport
 {
-    private const API_VERSION = '2';
+    private const API_VERSION = '3';
 
     private string $key;
 
@@ -122,6 +122,22 @@ final class InfobipApiTransport extends AbstractApiTransport
         }
 
         $this->attachmentsFormData($fields, $email);
+
+        if ($email->getHeaders()->has('intermediateReport')) {
+            $fields['intermediateReport'] = $email->getHeaders()->getHeaderBody('intermediateReport');
+        }
+
+        if ($email->getHeaders()->has('notifyUrl')) {
+            $fields['notifyUrl'] = $email->getHeaders()->getHeaderBody('notifyUrl');
+        }
+
+        if ($email->getHeaders()->has('notifyContentType')) {
+            $fields['notifyContentType'] = $email->getHeaders()->getHeaderBody('notifyContentType');
+        }
+
+        if ($email->getHeaders()->has('messageId')) {
+            $fields['messageId'] = $email->getHeaders()->getHeaderBody('messageId');
+        }
 
         return new FormDataPart($fields);
     }
